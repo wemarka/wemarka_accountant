@@ -4,7 +4,26 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const Reports = ({ operations }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const isDarkMode = document.body.classList.contains("dark");
+
+  const formatDate = (date) => {
+    if (!date) return t("invalidDate");
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate.getTime())
+      ? t("invalidDate")
+      : parsedDate.toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-US", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+  };
+
+  const formatDateForChart = (date) => {
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate.getTime()) ? t("invalidDate") : parsedDate.toLocaleDateString("ar-EG");
+  };
 
   if (!operations || operations.length === 0) {
     return (
@@ -15,12 +34,12 @@ const Reports = ({ operations }) => {
   }
 
   const incomeOperations = useMemo(
-    () => operations.filter((op) => op.type === "دخل"),
+    () => operations.filter((op) => op.type === t("income")),
     [operations]
   );
 
   const expenseOperations = useMemo(
-    () => operations.filter((op) => op.type === "مصروف"),
+    () => operations.filter((op) => op.type === t("expense")),
     [operations]
   );
 
@@ -35,12 +54,21 @@ const Reports = ({ operations }) => {
   );
 
   const chartData = {
-    labels: [t("income"), t("expense")],
+    labels: operations.map((op) => formatDateForChart(op.date)),
     datasets: [
       {
-        label: t("total"),
-        data: [totalIncome, totalExpense],
-        backgroundColor: ["#10b981", "#ef4444"],
+        label: t("income"),
+        data: operations
+          .filter((op) => op.type === t("income"))
+          .map((op) => op.amount),
+        backgroundColor: "#10b981",
+      },
+      {
+        label: t("expense"),
+        data: operations
+          .filter((op) => op.type === t("expense"))
+          .map((op) => op.amount),
+        backgroundColor: "#ef4444",
       },
     ],
   };
@@ -50,10 +78,26 @@ const Reports = ({ operations }) => {
     plugins: {
       legend: {
         position: "top",
+        labels: {
+          color: isDarkMode ? "#d1d5db" : "#4b5563", // لون النصوص
+        },
       },
       title: {
         display: true,
         text: t("operationsStatistics"),
+        color: isDarkMode ? "#d1d5db" : "#4b5563", // لون النصوص
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: isDarkMode ? "#d1d5db" : "#4b5563", // لون النصوص
+        },
+      },
+      y: {
+        ticks: {
+          color: isDarkMode ? "#d1d5db" : "#4b5563", // لون النصوص
+        },
       },
     },
   };
@@ -80,6 +124,28 @@ const Reports = ({ operations }) => {
         </div>
         <div className="mb-8">
           <Bar data={chartData} options={chartOptions} />
+        </div>
+        <div className="mb-8">
+          <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <thead>
+              <tr className="bg-gray-200 dark:bg-gray-700">
+                <th className="py-2 px-4 text-left">{t("date")}</th>
+                <th className="py-2 px-4 text-left">{t("type")}</th>
+                <th className="py-2 px-4 text-left">{t("amount")}</th>
+                <th className="py-2 px-4 text-left">{t("note")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {operations.map((op) => (
+                <tr key={op.id} className="border-b dark:border-gray-700">
+                  <td className="py-2 px-4">{formatDate(op.date)}</td>
+                  <td className="py-2 px-4">{op.type}</td>
+                  <td className="py-2 px-4">{op.amount}</td>
+                  <td className="py-2 px-4">{op.note || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

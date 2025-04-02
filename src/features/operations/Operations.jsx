@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Bar } from "react-chartjs-2";
 import * as XLSX from "xlsx";
@@ -13,23 +13,62 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { collection, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, doc, updateDoc, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom"; // ✅ إضافة استيراد Link
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const Operations = React.memo(({ operations = [], setOperations, handleLogout }) => {
-  const { t } = useTranslation();
+const Operations = ({ handleLogout }) => {
+  const [operations, setOperations] = useState([]); // ✅ تعريف الحالة داخلياً
+  const { t, i18n } = useTranslation();
   const [filter, setFilter] = useState("عرض الكل");
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateRange, setDateRange] = useState({ start: "", end: "" }); // ✅ إضافة نطاق التاريخ
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [newOperation, setNewOperation] = useState({ type: "دخل", amount: "", note: "" });
-  const [confirmDelete, setConfirmDelete] = useState(null); // ✅ حالة لتأكيد الحذف
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchOperations = async () => {
+      setLoading(true);
+      try {
+        const querySnapshot = await getDocs(collection(db, "operations"));
+        const operationsData = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            type: data.type || "غير محدد",
+            amount: data.amount || 0,
+            date: data.date ? new Date(data.date) : null,
+            note: data.note || "",
+          };
+        });
+
+        // تصفية العمليات التي تحتوي على بيانات غير صالحة
+        const validOperations = operationsData.filter(
+          (op) => op.type && op.amount && op.date
+        );
+
+        setOperations(validOperations);
+      } catch (error) {
+        console.error("Error fetching operations:", error);
+        toast.error(t("errorFetchingData"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOperations();
+  }, [t]);
 
   const filteredOperations = useMemo(() => {
+    if (!operations || operations.length === 0) return []; // تأكد من أن العمليات موجودة
+
     let filtered = operations;
 
     // تصفية حسب الفئة
@@ -40,12 +79,8 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
     // تصفية حسب نطاق التاريخ
     if (dateRange.start && dateRange.end) {
       filtered = filtered.filter((op) => {
-        const operationDate = op.date?.toDate ? op.date.toDate() : null;
-        return (
-          operationDate &&
-          operationDate >= new Date(dateRange.start) &&
-          operationDate <= new Date(dateRange.end)
-        );
+        const operationDate = new Date(op.date);
+        return operationDate >= new Date(dateRange.start) && operationDate <= new Date(dateRange.end);
       });
     }
 
@@ -61,21 +96,19 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
     return filtered;
   }, [operations, filter, searchQuery, dateRange]);
 
-  const totalIncome = useMemo(
-    () =>
-      operations
-        .filter((op) => op.type === "دخل")
-        .reduce((sum, op) => sum + op.amount, 0),
-    [operations]
-  );
+  const totalIncome = useMemo(() => {
+    if (!operations || operations.length === 0) return 0; // تأكد من أن العمليات موجودة
+    return operations
+      .filter((op) => op.type === "دخل")
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [operations]);
 
-  const totalExpense = useMemo(
-    () =>
-      operations
-        .filter((op) => op.type === "مصروف")
-        .reduce((sum, op) => sum + op.amount, 0),
-    [operations]
-  );
+  const totalExpense = useMemo(() => {
+    if (!operations || operations.length === 0) return 0; // تأكد من أن العمليات موجودة
+    return operations
+      .filter((op) => op.type === "مصروف")
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [operations]);
 
   const addOperation = useCallback(async () => {
     if (!newOperation.amount || !newOperation.note) {
@@ -86,10 +119,10 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
       const docRef = await addDoc(collection(db, "operations"), {
         ...newOperation,
         amount: parseFloat(newOperation.amount),
-        date: new Date(), // ✅ إضافة التاريخ
+        date: new Date(),
       });
       const newOp = { id: docRef.id, ...newOperation, date: new Date() };
-      setOperations((prev) => [...prev, newOp]); // ✅ تحديث العمليات محليًا
+      setOperations((prev) => [...prev, newOp]);
       setNewOperation({ type: "دخل", amount: "", note: "" });
       toast.success("تمت إضافة العملية بنجاح!");
     } catch (error) {
@@ -110,13 +143,13 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
   };
 
   const handleDeleteClick = (id) => {
-    setConfirmDelete(id); // ✅ فتح نافذة التأكيد
+    setConfirmDelete(id);
   };
 
   const confirmDeleteOperation = () => {
     if (confirmDelete) {
       deleteOperation(confirmDelete);
-      setConfirmDelete(null); // ✅ إغلاق نافذة التأكيد
+      setConfirmDelete(null);
     }
   };
 
@@ -188,7 +221,7 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
         },
       ],
       defaultStyle: {
-        font: "Amiri", // استخدام الخط العربي
+        font: "Amiri",
         fontSize: 12,
         alignment: "right",
       },
@@ -217,6 +250,26 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
     setDateRange((prev) => ({ ...prev, [name]: value }));
   };
 
+  const formatDate = (date) => {
+    if (!date) return t("invalidDate");
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate.getTime())
+      ? t("invalidDate")
+      : parsedDate.toLocaleDateString(i18n.language === "ar" ? "ar-EG" : "en-US", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+  };
+
+  if (loading) {
+    return <div className="text-center text-gray-500">{t("loading")}</div>;
+  }
+
+  if (!operations || operations.length === 0) {
+    return <div className="text-center text-gray-500">{t("noData")}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-8">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -224,15 +277,15 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
         <div className="flex justify-between mb-6">
           <Link
             to="/dashboard"
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 flex items-center gap-2"
           >
-            {t("backToDashboard")}
+            <FontAwesomeIcon icon={faArrowLeft} />
           </Link>
           <button
             onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2"
           >
-            {t("logout")}
+            <FontAwesomeIcon icon={faSignOutAlt} />
           </button>
         </div>
         <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">{t("operations")}</h1>
@@ -382,6 +435,6 @@ const Operations = React.memo(({ operations = [], setOperations, handleLogout })
       </div>
     </div>
   );
-});
+};
 
 export default Operations;

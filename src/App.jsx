@@ -1,9 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Sidebar from "./components/common/Sidebar";
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 import Login from "./Login";
 import NotFound from "./NotFound";
 import { auth, db } from "./firebase";
@@ -26,10 +26,10 @@ import AdvancedRoleManagement from "./AdvancedRoleManagement"; // ✅ إضافة
 import AdvancedReportSettings from "./AdvancedReportSettings"; // ✅ إضافة استيراد صفحة إدارة الإعدادات المتقدمة للتقارير
 import CustomNotificationsManagement from "./CustomNotificationsManagement"; // ✅ إضافة استيراد صفحة إدارة الإشعارات المخصصة
 import PrivateRoute from "./components/PrivateRoute"; // ✅ إضافة استيراد PrivateRoute
-import Management from "./Management"; // ✅ استيراد صفحة الإدارة الموحدة
-import Settings from "./Settings"; // ✅ استيراد صفحة الإعدادات الموحدة
-import ReportsManagement from "./ReportsManagement";
-import AnalyticsManagement from "./AnalyticsManagement";
+import Management from "./components/management/Management"; // ✅ استيراد صفحة الإدارة الموحدة
+import Settings from "./components/settings/Settings"; // ✅ استيراد صفحة الإعدادات الموحدة
+import ReportsManagement from "./components/reports/ReportsManagement";
+import AnalyticsManagement from "./components/analytics/AnalyticsManagement";
 import OperationsManagement from "./OperationsManagement";
 import Profile from "./Profile"; // ✅ إضافة استيراد صفحة الملف الشخصي
 import { ToastContainer } from 'react-toastify';
@@ -38,7 +38,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 // ✅ Lazy Loading للمكونات الكبيرة
-const Dashboard = lazy(() => import("./Dashboard"));
+const Dashboard = lazy(() => import("./components/dashboard/Dashboard"));
 const Operations = lazy(() => import("./Operations"));
 const Reports = lazy(() => import("./Reports"));
 
