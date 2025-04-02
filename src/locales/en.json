@@ -1,0 +1,20 @@
+{
+  "financial_operations": "Financial Operations",
+  "settings": "Settings",
+  "reports": "Reports",
+  "language": "Language",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "change_language": "Change Language",
+  "change_theme": "Change Theme",
+  "app_name": "Wemarka System",
+  "loading": "Loading...",
+  "notifications": "Notifications",
+  "new_notification": "New Notification",
+  "language_changed": "Language changed to {{lang}}",
+  "arabic": "Arabic",
+  "english": "English",
+  "logout": "Logout",
+  "logout_success": "Logged out successfully"
+}

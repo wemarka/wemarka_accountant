@@ -1,0 +1,20 @@
+{
+  "financial_operations": "العمليات المالية",
+  "settings": "الإعدادات",
+  "reports": "التقارير",
+  "language": "اللغة",
+  "theme": "الثيم",
+  "light": "فاتح",
+  "dark": "داكن",
+  "change_language": "تغيير اللغة",
+  "change_theme": "تغيير الثيم",
+  "app_name": "نظام Wemarka",
+  "loading": "جاري التحميل...",
+  "notifications": "الإشعارات",
+  "new_notification": "إشعار جديد",
+  "language_changed": "تم تغيير اللغة إلى {{lang}}",
+  "arabic": "العربية",
+  "english": "الإنجليزية",
+  "logout": "تسجيل الخروج",
+  "logout_success": "تم تسجيل الخروج بنجاح"
+}
