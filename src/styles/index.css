@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* تحسين التصميم */
+body {
+  @apply bg-gray-100 dark:bg-gray-900 font-sans;
+}
+
+.sidebar {
+  @apply bg-gray-800 text-white;
+}
+
+.header-dashboard {
+  @apply bg-white dark:bg-gray-800 shadow p-4;
+}
+
+.bottom-page {
+  @apply bg-gray-800 text-white text-center py-4;
+}
+
+/* دعم الوضع الداكن */
+body.dark {
+  @apply bg-gray-900 text-white;
+}
+
+/* تحسين الأزرار */
+button {
+  @apply transition duration-300 ease-in-out;
+}
+
+/* تحسين النصوص */
+h1, h2, h3 {
+  @apply text-gray-800 dark:text-gray-100;
+}
+
+p {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+/* تحسين شريط التنقل */
+nav {
+  @apply bg-blue-500 text-white p-4 dark:bg-gray-800;
+}
+
+nav a {
+  @apply hover:underline;
+}
+
+nav button {
+  @apply bg-red-500 px-4 py-2 rounded hover:bg-red-600;
+}
+
+/* تحسين الإشعارات */
+.notification {
+  @apply bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600;
+}
+
+.notification-dropdown {
+  @apply absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4;
+}
+
+.notification-item {
+  @apply border-b py-2;
+}

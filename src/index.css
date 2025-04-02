@@ -1,0 +1,365 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* تحسين التصميم */
+body {
+  @apply bg-gray-100 text-gray-800 font-sans;
+}
+
+body[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+body[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+.sidebar {
+  @apply bg-gray-800 text-white;
+}
+
+.header-dashboard {
+  @apply bg-white dark:bg-gray-800 shadow p-4;
+}
+
+.bottom-page {
+  @apply bg-gray-800 text-white text-center py-4;
+}
+
+/* دعم الوضع الداكن */
+body.dark {
+  @apply bg-gray-900 text-white;
+}
+
+body.dark .sidebar {
+  @apply bg-gray-700 text-gray-200;
+}
+
+body.dark .header-dashboard {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark .bottom-page {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+  @apply text-gray-100;
+}
+
+body.dark p {
+  @apply text-gray-300;
+}
+
+body.dark button {
+  @apply bg-gray-700 text-gray-200 hover:bg-gray-600;
+}
+
+body.dark nav {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark nav a {
+  @apply text-gray-200 hover:text-gray-400;
+}
+
+body.dark .notification {
+  @apply bg-yellow-600 text-gray-200 hover:bg-yellow-500;
+}
+
+body.dark .notification-dropdown {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark .notification-item {
+  @apply text-gray-200;
+}
+
+body.dark .toast-notification {
+  @apply bg-gray-800 text-gray-200 border-gray-600;
+}
+
+body.dark .toast-notification .icon {
+  @apply text-gray-400;
+}
+
+body.dark .toast-notification .message {
+  @apply text-gray-200;
+}
+
+body.dark .notification-bar {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark .notification-bar .icon {
+  @apply text-gray-400;
+}
+
+body.dark .notification-bar .message {
+  @apply text-gray-200;
+}
+
+body.dark table {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark table thead {
+  @apply bg-gray-700 text-gray-300;
+}
+
+body.dark table tbody tr {
+  @apply border-b border-gray-600;
+}
+
+body.dark table tbody tr:hover {
+  @apply bg-gray-700;
+}
+
+body.dark table tbody td {
+  @apply text-gray-200;
+}
+
+/* دعم الوضع الداكن للحقول النصية */
+body.dark input,
+body.dark textarea,
+body.dark select {
+  @apply bg-gray-700 text-gray-200 border-gray-600 placeholder-gray-400;
+}
+
+body.dark input:focus,
+body.dark textarea:focus,
+body.dark select:focus {
+  @apply outline-none ring-2 ring-blue-500;
+}
+
+/* دعم الوضع الداكن للنماذج */
+body.dark form {
+  @apply bg-gray-800 text-gray-200;
+}
+
+/* دعم الوضع الداكن للعناوين داخل النماذج */
+body.dark form h1,
+body.dark form h2,
+body.dark form h3 {
+  @apply text-gray-100;
+}
+
+/* دعم الوضع الداكن للحدود */
+body.dark .border {
+  @apply border-gray-600;
+}
+
+/* دعم الوضع الداكن للبطاقات */
+body.dark .card {
+  @apply bg-gray-800 text-gray-200 shadow-lg;
+}
+
+body.dark .card h2,
+body.dark .card p {
+  @apply text-gray-200;
+}
+
+/* تحسين الأزرار */
+button {
+  @apply transition duration-300 ease-in-out;
+}
+
+/* تحسين النصوص */
+h1,
+h2,
+h3 {
+  @apply text-gray-800 dark:text-gray-100;
+}
+
+p {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+/* تحسين شريط التنقل */
+nav {
+  @apply bg-blue-500 text-white p-4 dark:bg-gray-800;
+}
+
+nav a {
+  @apply hover:underline;
+}
+
+nav[dir="rtl"] a {
+  text-align: right;
+}
+
+nav[dir="ltr"] a {
+  text-align: left;
+}
+
+nav button {
+  @apply bg-red-500 px-4 py-2 rounded hover:bg-red-600;
+}
+
+/* تحسين الإشعارات */
+.notification {
+  @apply bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600;
+}
+
+.notification-dropdown {
+  @apply absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4;
+  overflow: hidden;
+  /* منع خروج المحتوى */
+  z-index: 50;
+  /* التأكد من ظهور القائمة فوق العناصر الأخرى */
+  max-width: calc(100vw - 20px);
+  /* التأكد من أن القائمة لا تتجاوز عرض الشاشة */
+  left: auto;
+  /* ضمان محاذاة صحيحة */
+  right: 10px;
+  /* إضافة مسافة من الحافة اليمنى */
+}
+
+body[dir="rtl"] .notification-dropdown {
+  right: auto;
+  left: 10px;
+  /* محاذاة القائمة عند الاتجاه rtl */
+}
+
+body[dir="rtl"] nav a {
+  text-align: right;
+  /* تحسين محاذاة الروابط */
+}
+
+body[dir="rtl"] .notification-item {
+  text-align: right;
+  /* تحسين محاذاة عناصر الإشعارات */
+}
+
+.notification-item {
+  @apply border-b py-2;
+}
+
+.toast-notification {
+  @apply flex items-center gap-2 bg-green-100 text-green-800 p-3 rounded-md shadow-md border border-green-300;
+  font-size: 0.875rem;
+  /* حجم خط أصغر */
+}
+
+.toast-notification .icon {
+  @apply text-green-600 text-lg;
+  /* أيقونة بحجم مناسب */
+}
+
+.toast-notification .message {
+  @apply flex-1;
+  /* النص يأخذ المساحة المتبقية */
+}
+
+.notification-bar {
+  @apply fixed top-0 left-0 w-full bg-green-500 text-white flex items-center justify-center gap-2 py-2 shadow-md z-50;
+  font-size: 0.875rem;
+  /* حجم خط أصغر */
+}
+
+.notification-bar .icon {
+  @apply text-white text-lg;
+  /* أيقونة بحجم مناسب */
+}
+
+.notification-bar .message {
+  @apply flex-1 text-center;
+  /* النص في المنتصف */
+}
+
+/* إضافة مسافة أعلى الصفحة عند وجود شريط الإشعار */
+body.with-notification-bar {
+  padding-top: 3rem;
+  /* ارتفاع شريط الإشعارات */
+}
+
+/* دعم الوضع الداكن للرسوم البيانية */
+body.dark .apexcharts-canvas {
+  background-color: #1f2937 !important;
+  /* لون الخلفية الداكن */
+  color: #d1d5db !important;
+  /* لون النصوص */
+}
+
+body.dark .apexcharts-tooltip {
+  background-color: #374151 !important;
+  /* لون خلفية التلميحات */
+  color: #d1d5db !important;
+  /* لون النصوص */
+  border: 1px solid #4b5563;
+  /* لون الحدود */
+}
+
+body.dark .apexcharts-legend {
+  color: #d1d5db !important;
+  /* لون النصوص */
+}
+
+body.dark .apexcharts-xaxis-label,
+body.dark .apexcharts-yaxis-label {
+  color: #d1d5db !important;
+  /* لون النصوص */
+}
+
+body.dark .apexcharts-gridline {
+  stroke: #4b5563 !important;
+  /* لون خطوط الشبكة */
+}
+
+/* تحسين النصوص داخل البطاقات */
+body.dark .card h2,
+body.dark .card p {
+  color: #d1d5db;
+  /* لون النصوص */
+}
+
+/* تحسين النصوص */
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+  @apply text-gray-100;
+}
+
+body.dark p,
+body.dark span {
+  @apply text-gray-300;
+}
+
+/* تحسين الجداول */
+body.dark table {
+  @apply bg-gray-800 text-gray-200;
+}
+
+body.dark table thead {
+  @apply bg-gray-700 text-gray-300;
+}
+
+body.dark table tbody tr {
+  @apply border-b border-gray-600;
+}
+
+body.dark table tbody tr:hover {
+  @apply bg-gray-700;
+}
+
+body.dark table tbody td {
+  @apply text-gray-200;
+}
+
+/* تحسين البطاقات */
+.card {
+  @apply bg-white text-gray-800 shadow-lg rounded-lg p-6;
+}
+
+.card h2 {
+  @apply text-xl font-bold;
+}
+
+.card p {
+  @apply text-lg;
+}
